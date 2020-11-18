@@ -8,14 +8,14 @@ var http = require('http');
 const { request } = require('express');
 //var cors = require('cors');
 var app = express();
-var router = express.Router();
+//var router = express.Router();
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 app.use('/api',router);
 
 
-router.use((request,response,next)=>{
+/* router.use((request,response,next)=>{
     console.log('middleware')
     next();
 })
@@ -26,7 +26,7 @@ router.route('/orders').get((request,response)=>{
     }) 
 
 })
-
+ */
 const { auth } = require('express-openid-connect');
 
 const config = {
@@ -52,6 +52,12 @@ app.get('/', (req, res) => {
 
 app.get('/profile', requiresAuth(), (req, res) => {
     res.send(JSON.stringify(req.oidc.user));
+});
+
+app.get('/api/orders', requiresAuth(), (req, res) => {
+    dboperations.getOrders().then(result=>{
+        res.json(result.recordset);    
+    }) 
 });
 
 var port = process.env.port || 443;
