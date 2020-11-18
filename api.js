@@ -33,7 +33,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: process.env.Auth0Secret,
-  baseURL: 'https://api11.azurewebsites.net/',
+  baseURL: 'https://api11.azurewebsites.net/api/',
   clientID: 'bAzoU1hYJfvpPJ7N5deAFKFzb0A7BwYO',
   issuerBaseURL: 'https://dev-ub3msj1r.us.auth0.com'
 };
