@@ -27,6 +27,26 @@ router.route('/orders').get((request,response)=>{
 
 })
 
+const { auth } = require('express-openid-connect');
+
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: process.env.Auth0Secret,
+  baseURL: 'https://api11.azurewebsites.net/',
+  clientID: 'bAzoU1hYJfvpPJ7N5deAFKFzb0A7BwYO',
+  issuerBaseURL: 'https://dev-ub3msj1r.us.auth0.com'
+};
+
+// auth router attaches /login, /logout, and /callback routes to the baseURL
+app.use(auth(config));
+
+// req.isAuthenticated is provided from the auth router
+app.get('/', (req, res) => {
+  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+});
+
+
 var port = process.env.port || 443;
 
 app.set('port',port);
