@@ -30,10 +30,10 @@ router.route('/orders').get((request,response)=>{
 const { auth } = require('express-openid-connect');
 
 const config = {
-  authRequired: false,
+  authRequired: true,
   auth0Logout: true,
   secret: process.env.Auth0Secret,
-  baseURL: 'https://api11.azurewebsites.net/api/',
+  baseURL: 'https://api11.azurewebsites.net/',
   clientID: 'bAzoU1hYJfvpPJ7N5deAFKFzb0A7BwYO',
   issuerBaseURL: 'https://dev-ub3msj1r.us.auth0.com'
 };
