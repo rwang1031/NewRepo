@@ -21,10 +21,10 @@ router.use((request,response,next)=>{
 })
 
 router.route('/orders').get((request,response)=>{
-/*     dboperations.getOrders().then(result=>{
+    dboperations.getOrders().then(result=>{
         response.json(result.recordset);    
-    }) */
-    response.json(process.env.TEST)
+    }) 
+
 })
 
 var port = process.env.port || 443;
