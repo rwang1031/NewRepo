@@ -14,20 +14,6 @@ var router = express.Router();
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
-app.use('/api',router);
-
-
-router.use((request,response,next)=>{
-    console.log('middleware')
-    next();
-})
-
-router.route('/orders').get((request,response)=>{
-    dboperations.getOrders().then(result=>{
-        response.json(result.recordset);    
-    }) 
-
-})
 
 var jwtCheck = jwt({
     secret: jwks.expressJwtSecret({
@@ -42,6 +28,21 @@ var jwtCheck = jwt({
 });
 
 app.use(jwtCheck);
+
+app.use('/api',router);
+
+
+router.use((request,response,next)=>{
+    console.log('middleware')
+    next();
+})
+
+router.route('/orders').get((request,response)=>{
+    dboperations.getOrders().then(result=>{
+        response.json(result.recordset);    
+    }) 
+
+})
 
 app.get('/authorized', function (req, res) {
     res.send('Secured Resource');
