@@ -5,26 +5,78 @@ sql.on('error', err => {
     // ... error handler
 })
 
-function getOrders(){
-
-    try{
+ function createUser(firstName,lastName,email,authToken,address1,address2,day_phone,eve_phone,postal_code,country,province,city){
+    try{       
         var cp = new sql.ConnectionPool(config)
-
-        
-        var pool = cp.connect().then(p=>{
-
-        return p.request().query("SELECT top 5 * from occasions.tblOrders");
-            
-        });
-
+        console.log("authId:+++"+ authToken);
+        var pool = cp.connect().then(function(conn){
+            return conn.request()
+            .input('FirstName',firstName)
+            .input('LastName',lastName)
+            .input('Email',email)
+            .input('AuthId',authToken)
+            .input('Address',address1)
+            .input('AddressLine2',address2)
+            .input('PostalCode',postal_code)
+            .input('DayPhone',day_phone)
+            .input('EvePhone',eve_phone)
+            .input('Country',country)
+            .input('CountryProvinceMappingId',province)
+            .input('City',city)
+            .execute('[dbo].[spUserCreate]')           
+        }); 
         return pool; 
     }
     catch(err){
         console.log(err);
+    }           
+}
+
+function updateUser(id,firstName,lastName,email,address1,address2,day_phone,eve_phone,postal_code,country,province,city){
+    try{       
+        var cp = new sql.ConnectionPool(config)
+        var pool = cp.connect().then(function(conn){
+            return conn.request()
+            .input('UserId',id)
+            .input('FirstName',firstName)
+            .input('LastName',lastName)
+            .input('Email',email)
+            .input('Address',address1)
+            .input('AddressLine2',address2)
+            .input('DayPhone',day_phone)
+            .input('EvePhone',eve_phone)
+            .input('PostalCode',postal_code)
+            .input('Country',country)
+            .input('CountryProvinceMappingId',province)
+            .input('City',city)
+            .execute('[dbo].[spUserUpdate]')           
+        }); 
+        return pool; 
     }
-           
+    catch(err){
+        console.log(err);
+    }           
+}
+
+function getUserByAuthToken(authToken){
+    try{
+        var cp = new sql.ConnectionPool(config)
+        console.log("authId:+++DB"+ authToken);
+        var pool = cp.connect().then(function(conn){
+            return conn.request()
+            .input('AuthToken',authToken) 
+            .execute('[dbo].[spUserGetByAuthToken]')           
+        }); 
+        return pool;
+  
+    }
+    catch(err){
+        console.log(err);
+    }          
 }
 
 module.exports = {
-    getOrders: getOrders
+    createUser: createUser,
+    getUserByAuthToken:getUserByAuthToken,
+    updateUser:updateUser
 }
