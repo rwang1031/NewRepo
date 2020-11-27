@@ -147,12 +147,14 @@ router.route('/profiles').put((request,response)=>{
 })
 
 router.route('/profiles/:id').get((request,response)=>{   
-    let id = request.params.id;
+    let id = Number(request.params.id);
      profileDbSvc.getProfile(
         id
      ).then((result)=>{
-         console.log("get profile final result:"+stringify(result));        
-         response.json(mapProfileFromDB(result.recordset));    
+         console.log("get profile final result:");
+         console.log(result);
+
+         response.json(mapProfileFromDB(result.recordset[0]));    
      }) 
 
 })
@@ -163,11 +165,14 @@ router.route('/profiles/byUser/:userId').get((request,response)=>{
         userId
      ).then((result)=>{
          console.log(result.recordset);   
-                
+        
+        var profiles = [];
+
         result.recordset.forEach(item=>{
-            item = mapProfileFromDB(item)
+           var profile = mapProfileFromDB(item)
+           profiles.push(profile);
         })    
-         response.json(result.recordset);    
+         response.json(profiles);    
      }) 
 
 })
