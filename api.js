@@ -1,6 +1,8 @@
-const dboperations = require('./dboperations');
-var Db = require('./dboperations');
+const userDbSvc = require('./userDbSvc');
+const profileDbSvc = require('./profileDbSvc');
+var Db = require('./userDbSvc');
 var User = require('./user');
+var Profile = require('./profile');
 var express = require('express');
 var bodyParser = require('body-parser');
 var jwt = require('express-jwt');
@@ -46,7 +48,7 @@ router.use((request,response,next)=>{
 router.route('/users').post((request,response)=>{
     
     let user = request.body;
-     dboperations.createUser(
+     userDbSvc.createUser(
         user.firstName,
         user.lastName,
         user.email,
@@ -67,7 +69,7 @@ router.route('/users').post((request,response)=>{
 router.route('/users').put((request,response)=>{
     
     let user = request.body;
-     dboperations.updateUser(
+     userDbSvc.updateUser(
         user.id,
         user.firstName,
         user.lastName,
@@ -89,7 +91,7 @@ router.route('/users/:authToken').get((request,response)=>{
     let authToken = request.params.authToken;
     console.log("getuser");
     console.log(request.params);
-     dboperations.getUserByAuthToken(
+     userDbSvc.getUserByAuthToken(
         authToken
      ).then((result)=>{
          console.log("get user final result:"+stringify(result));        
@@ -97,7 +99,6 @@ router.route('/users/:authToken').get((request,response)=>{
      }) 
 
 })
-
 
 var mapUserFromDB = function(recordset){
 
@@ -117,6 +118,70 @@ var mapUserFromDB = function(recordset){
     recordset[0].fldCountry,
     recordset[0].fldCountryProvinceMappingId,
     recordset[0].fldCity);
+}
+
+router.route('/profiles').post((request,response)=>{
+    
+    let profile = request.body;
+     profileDbSvc.createProfile(
+        profile.firstName,
+        profile.lastName,
+        profile.location,
+        profile.userId
+     ).then((result)=>{     
+         response.json(mapProfileFromDB(result.recordset));    
+     }) 
+})
+
+router.route('/profiles').put((request,response)=>{
+    
+    let profile = request.body;
+    profileDbSvc.updateProfile(
+        profile.id,
+        profile.firstName,
+        profile.lastName,
+        profile.location      
+     ).then((result)=>{     
+         response.json(mapProfileFromDB(result.recordset));    
+     }) 
+})
+
+router.route('/profiles/:id').get((request,response)=>{   
+    let id = request.params.id;
+     profileDbSvc.getProfile(
+        id
+     ).then((result)=>{
+         console.log("get profile final result:"+stringify(result));        
+         response.json(mapProfileFromDB(result.recordset));    
+     }) 
+
+})
+
+router.route('/profiles/byUser/:userId').get((request,response)=>{   
+    let userId = request.params.userId;
+     profileDbSvc.getProfilesByUserId(
+        userId
+     ).then((result)=>{
+         console.log(result.recordset);   
+                
+        result.recordset.forEach(item=>{
+            item = mapProfileFromDB(item)
+        })    
+         response.json(result.recordset);    
+     }) 
+
+})
+
+var mapProfileFromDB = function(record){
+
+    if(record==null | record.length==0)
+        return null;
+    return new Profile(
+    record.fldId,
+    record.fldFirstName,
+    record.fldLastName,
+    record.fldLocationId,
+    record.fldUserId);
 }
 
 app.get('/authorized', function (req, res) {
