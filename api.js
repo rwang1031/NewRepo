@@ -127,9 +127,12 @@ router.route('/profiles').post((request,response)=>{
         profile.firstName,
         profile.lastName,
         profile.location,
-        profile.userId
-     ).then((result)=>{     
-         response.json(mapProfileFromDB(result.recordset));    
+        profile.userId,
+        profile.dayOfBirth
+     ).then((result)=>{  
+         console.log("profile created:")
+         console.log(result);   
+         response.json(mapProfileFromDB(result.recordset[0]));    
      }) 
 })
 
@@ -140,11 +143,23 @@ router.route('/profiles').put((request,response)=>{
         profile.id,
         profile.firstName,
         profile.lastName,
-        profile.location      
+        profile.location,
+        profile.dayOfBirth      
      ).then((result)=>{     
          response.json(mapProfileFromDB(result.recordset));    
      }) 
 })
+
+router.route('/profiles').delete((request,response)=>{
+    
+    var id = request.params.id;
+    profileDbSvc.removeProfile(
+        id  
+     ).then((result)=>{     
+         response.json(mapProfileFromDB(result.recordset));    
+     }) 
+})
+
 
 router.route('/profiles/:id').get((request,response)=>{   
     let id = Number(request.params.id);
@@ -186,6 +201,7 @@ var mapProfileFromDB = function(record){
     record.fldFirstName,
     record.fldLastName,
     record.fldLocationId,
+    record.fldDayOfBirth,
     record.fldUserId);
 }
 

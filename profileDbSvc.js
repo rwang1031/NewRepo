@@ -5,7 +5,7 @@ sql.on('error', err => {
     // ... error handler
 })
 
- function createProfile(firstName,lastName,location,userId){
+ function createProfile(firstName,lastName,location,userId,dayOfBirth){
     try{       
         var cp = new sql.ConnectionPool(config)
         console.log("createProfile:+++");
@@ -15,6 +15,7 @@ sql.on('error', err => {
             .input('FirstName',firstName)
             .input('LastName',lastName)
             .input('LocationId',location)
+            .input('DayOfBirth',dayOfBirth)
             .execute('[dbo].[spProfileCreate]')           
         }); 
         return pool; 
@@ -24,7 +25,7 @@ sql.on('error', err => {
     }           
 }
 
-function updateProfile(id,firstName,lastName,location){
+function updateProfile(id,firstName,lastName,location,dayOfBirth){
     try{       
         var cp = new sql.ConnectionPool(config)
         var pool = cp.connect().then(function(conn){
@@ -32,8 +33,24 @@ function updateProfile(id,firstName,lastName,location){
             .input('FirstName',firstName)
             .input('LastName',lastName)
             .input('LocationId',location)
+            .input('DayOfBirth',dayOfBirth)
             .input('Id',id)
             .execute('[dbo].[spProfileUpdate]')           
+        }); 
+        return pool; 
+    }
+    catch(err){
+        console.log(err);
+    }           
+}
+
+function removeProfile(id){
+    try{       
+        var cp = new sql.ConnectionPool(config)
+        var pool = cp.connect().then(function(conn){
+            return conn.request()
+            .input('Id',id)
+            .execute('[dbo].[spProfileDelete]')           
         }); 
         return pool; 
     }
@@ -78,5 +95,6 @@ module.exports = {
     createProfile: createProfile,
     getProfile:getProfile,
     updateProfile:updateProfile,
+    removeProfile:removeProfile,
     getProfilesByUserId:getProfilesByUserId
 }
