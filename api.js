@@ -150,7 +150,7 @@ router.route('/profiles').put((request,response)=>{
      }) 
 })
 
-router.route('/profiles').delete((request,response)=>{
+router.route('/profiles/:id').delete((request,response)=>{
     
     var id = request.params.id;
     profileDbSvc.removeProfile(
