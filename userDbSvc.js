@@ -75,8 +75,26 @@ function getUserByAuthToken(authToken){
     }          
 }
 
+function getInitUserAndProfileByAuthToken(authToken){
+    try{
+        var cp = new sql.ConnectionPool(config)
+        console.log("authId:for init --DB"+ authToken);
+        var pool = cp.connect().then(function(conn){
+            return conn.request()
+            .input('AuthToken',authToken) 
+            .execute('[dbo].[spGetInitUserAndProfileByAuthToken]')           
+        }); 
+        return pool;
+  
+    }
+    catch(err){
+        console.log(err);
+    }          
+}
+
 module.exports = {
     createUser: createUser,
     getUserByAuthToken:getUserByAuthToken,
-    updateUser:updateUser
+    updateUser:updateUser,
+    getInitUserAndProfileByAuthToken:getInitUserAndProfileByAuthToken
 }

@@ -3,6 +3,7 @@ const profileDbSvc = require('./profileDbSvc');
 var Db = require('./userDbSvc');
 var User = require('./user');
 var Profile = require('./profile');
+var InitObj = require('./initObj');
 var express = require('express');
 var bodyParser = require('body-parser');
 var jwt = require('express-jwt');
@@ -12,6 +13,7 @@ var cors = require('cors');
 
 const { request } = require('express');
 const { stringify } = require('querystring');
+const { profile } = require('console');
 //var cors = require('cors');
 var app = express();
 app.use(cors());
@@ -98,6 +100,26 @@ router.route('/users/:authToken').get((request,response)=>{
          response.json(mapUserFromDB(result.recordset));    
      }) 
 
+})
+
+router.route('/users/init/:authToken').get((request,response)=>{   
+    let authToken = request.params.authToken;
+    console.log("getuser");
+    console.log(request.params);
+     userDbSvc.getInitUserAndProfileByAuthToken(
+        authToken
+     ).then((result)=>{
+         console.log(result.recordsets);
+         var user = mapUserFromDB(result.recordsets[0]);
+         var profiles = [];
+        result.recordsets[1].forEach(item=>{
+           var profile = mapProfileFromDB(item)
+           profiles.push(profile);
+        })        
+        var initObject = new InitObj(user,profiles);
+         
+         response.json(initObject);    
+     }) 
 })
 
 var mapUserFromDB = function(recordset){
