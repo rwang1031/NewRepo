@@ -211,7 +211,19 @@ router.route('/profiles/byUser/:userId').get((request,response)=>{
         })    
          response.json(profiles);    
      }) 
+})
 
+router.route('/test').get((request,response)=>{   
+
+     userDbSvc.getJsonTest(
+     ).then((result)=>{
+         var jsonResult;
+         for(var key in result.recordset[0]){
+            jsonResult = result.recordset[0][key]
+         }
+         console.log(JSON.parse(jsonResult)[0]);
+         response.json(JSON.parse(jsonResult)[0]);    
+     }) 
 })
 
 var mapProfileFromDB = function(record){

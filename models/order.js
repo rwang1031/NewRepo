@@ -1,14 +1,10 @@
-const { user } = require("../dbconfig");
-
 class Order{
-    constructor(id,userId,orderDate,reqDeliverDate,deliveredDate,paymentRefId,cartId){
+    constructor(id,userId,orderDate,paymentRefId){
         this.id = id;
         this.userId = userId;
         this.orderDate = orderDate;
-        this.reqDeliverDate = reqDeliverDate;
-        this.deliveredDate = deliveredDate;
         this.paymentRefId = paymentRefId;
-        this.cartId = cartId;
+        this.orderItems = [new orderItem(), new orderItem(), new orderItem()]
     }
 }
 module.exports = Order;
