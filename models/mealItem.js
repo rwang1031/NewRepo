@@ -9,9 +9,8 @@ class MealItem{
             this.drinkId=2,
             this.juiceId=null,
             this.condiments =[2,3],
-            this.complimentarySideId= 2,
 
-            this.deliverDate ='2020-12-06',
+            this.intendDeliverDate ='2020-12-06',
             this.profileId = 2   
     }
 }
