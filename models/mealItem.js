@@ -1,5 +1,5 @@
 
-class orderItems{
+class MealItem{
     constructor(){
             this.id = 1,
             this.typeid= 1,
@@ -15,4 +15,4 @@ class orderItems{
             this.profileId = 2   
     }
 }
-module.exports = Cart;
+module.exports = MealItem;

@@ -10,7 +10,8 @@ class MenuAvailable{
         this.selecableJuices = [1,2];
         this.juiceAllowMultiple = false;
         this.selectableCondiments = [1,2];
-        this.condimentAllowMultiple = true;       
+        this.condimentAllowMultiple = true; 
+        this.price = 5.12;      
     }
 }
 module.exports = MenuAvailable;
