@@ -1,6 +1,6 @@
 class InitObj{
     constructor(user,profiles,availableMenuItems,orderMealItems,
-        refCondiment,refCountry,refDrink,refJuice,refMaterialRes,refMenuItemType,refMenuItemSubType){
+        refCondiment,refCountry,refDrink,refJuice,refMaterialRes,refMenuItemType,refMenuItemSubType,refLocation){
         this.user = user;
         this.profiles = profiles;
         this.availableMenuItems = availableMenuItems;
@@ -11,7 +11,8 @@ class InitObj{
         this.refJuice = refJuice;
         this.refMaterialRes = refMaterialRes;
         this.refMenuItemType = refMenuItemType;
-        this.refMenuItemSubType = refMenuItemSubType
+        this.refMenuItemSubType = refMenuItemSubType;
+        this.refLocation = refLocation;
     }
 }
 

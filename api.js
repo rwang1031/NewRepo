@@ -154,9 +154,13 @@ router.route('/users/init/:authToken').get((request,response)=>{
         key = Object.keys(refMenuItemSubTypeDataSet)[0];
         var refMenuItemSubType = JSON.parse(refMenuItemSubTypeDataSet[key]);
 
+        var refLocationDataSet = result.recordsets[11][0];
+        key = Object.keys(refLocationDataSet)[0];
+        var refLocation = JSON.parse(refLocationDataSet[key]);
+
               
         var initObject = new InitObj(user,profiles,availableMenuItems,orderMealItems,
-            refCondiment,refCountry,refDrink,refJuice,refMaterialRes,refMenuItemType,refMenuItemSubType);         
+            refCondiment,refCountry,refDrink,refJuice,refMaterialRes,refMenuItemType,refMenuItemSubType,refLocation);         
         response.json(initObject);
 
      }) 
