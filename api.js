@@ -15,6 +15,7 @@ const { request } = require('express');
 const { stringify } = require('querystring');
 const { profile } = require('console');
 const { parse } = require('path');
+const InitRefs = require('./models/initRefs');
 //var cors = require('cors');
 var app = express();
 app.use(cors());
@@ -38,7 +39,7 @@ var jwtCheck = jwt({
   algorithms: ['RS256']
 });
 
-app.use(jwtCheck);
+//app.use(jwtCheck);
 
 app.use('/api',router);
 
@@ -118,64 +119,66 @@ router.route('/users/init/:authToken').get((request,response)=>{
            profiles.push(profile);
         }) 
         
-        var availableMenuItemsDataSet = result.recordsets[2][0];
-        var key = Object.keys(availableMenuItemsDataSet)[0];
-        var availableMenuItems = JSON.parse(availableMenuItemsDataSet[key]);        
-  
-        var orderMealItemsDataSet = result.recordsets[3][0];
+        var orderMealItemsDataSet = result.recordsets[2][0];
             key = Object.keys(orderMealItemsDataSet)[0];
+
+            console.log(result.recordsets);
         var orderMealItems = JSON.parse(orderMealItemsDataSet[key]);
-        
-        var refCondimentDataSet = result.recordsets[4][0];
-            key = Object.keys(refCondimentDataSet)[0];
-        var refCondiment = JSON.parse(refCondimentDataSet[key]);
 
-        var refCountryDataSet = result.recordsets[5][0];
-        key = Object.keys(refCountryDataSet)[0];
-        var refCountry = JSON.parse(refCountryDataSet[key]);
-
-        var refDrinkDataSet = result.recordsets[6][0];
-        key = Object.keys(refDrinkDataSet)[0];
-        var refDrink = JSON.parse(refDrinkDataSet[key]);
-
-        var refJuiceDataSet = result.recordsets[7][0];
-        key = Object.keys(refJuiceDataSet)[0];
-        var refJuice = JSON.parse(refJuiceDataSet[key]);
-
-        var refMaterialResDataSet = result.recordsets[8][0];
-        key = Object.keys(refMaterialResDataSet)[0];
-        var refMaterialRes = JSON.parse(refMaterialResDataSet[key]);
-
-        var refMenuItemTypeDataSet = result.recordsets[9][0];
-        key = Object.keys(refMenuItemTypeDataSet)[0];
-        var refMenuItemType = JSON.parse(refMenuItemTypeDataSet[key]);
-
-        var refMenuItemSubTypeDataSet = result.recordsets[10][0];
-        key = Object.keys(refMenuItemSubTypeDataSet)[0];
-        var refMenuItemSubType = JSON.parse(refMenuItemSubTypeDataSet[key]);
-
-        var refLocationDataSet = result.recordsets[11][0];
-        key = Object.keys(refLocationDataSet)[0];
-        var refLocation = JSON.parse(refLocationDataSet[key]);
-
-              
-        var initObject = new InitObj(user,profiles,availableMenuItems,orderMealItems,
-            refCondiment,refCountry,refDrink,refJuice,refMaterialRes,refMenuItemType,refMenuItemSubType,refLocation);         
+ 
+        var initObject = new InitObj(user,profiles,orderMealItems);         
         response.json(initObject);
 
      }) 
 })
 
-router.route('/test').get((request,response)=>{   
+router.route('/repo/refData').get((request,response)=>{   
 
-    userDbSvc.getJsonTest(
+    userDbSvc.getRefData(
     ).then((result)=>{
-        var jsonResult;
-        for(var key in result.recordset[0]){
-           jsonResult = result.recordset[0][key]
-        }
-        console.log(JSON.parse(jsonResult)[0]);
-        response.json(JSON.parse(jsonResult)[0]);    
+
+
+        var availableMenuItemsDataSet = result.recordsets[0][0];
+        var key = Object.keys(availableMenuItemsDataSet)[0];
+        var availableMenuItems = JSON.parse(availableMenuItemsDataSet[key]);  
+        
+        var refCondimentDataSet = result.recordsets[1][0];
+            key = Object.keys(refCondimentDataSet)[0];
+        var refCondiment = JSON.parse(refCondimentDataSet[key]);
+
+        var refCountryDataSet = result.recordsets[2][0];
+        key = Object.keys(refCountryDataSet)[0];
+        var refCountry = JSON.parse(refCountryDataSet[key]);
+
+        var refDrinkDataSet = result.recordsets[3][0];
+        key = Object.keys(refDrinkDataSet)[0];
+        var refDrink = JSON.parse(refDrinkDataSet[key]);
+
+        var refJuiceDataSet = result.recordsets[4][0];
+        key = Object.keys(refJuiceDataSet)[0];
+        var refJuice = JSON.parse(refJuiceDataSet[key]);
+
+        var refMaterialResDataSet = result.recordsets[5][0];
+        key = Object.keys(refMaterialResDataSet)[0];
+        var refMaterialRes = JSON.parse(refMaterialResDataSet[key]);
+
+        var refMenuItemTypeDataSet = result.recordsets[6][0];
+        key = Object.keys(refMenuItemTypeDataSet)[0];
+        var refMenuItemType = JSON.parse(refMenuItemTypeDataSet[key]);
+
+        var refMenuItemSubTypeDataSet = result.recordsets[7][0];
+        key = Object.keys(refMenuItemSubTypeDataSet)[0];
+        var refMenuItemSubType = JSON.parse(refMenuItemSubTypeDataSet[key]);
+
+        var refLocationDataSet = result.recordsets[8][0];
+        key = Object.keys(refLocationDataSet)[0];
+        var refLocation = JSON.parse(refLocationDataSet[key]);
+
+        var initRefs = new InitRefs(availableMenuItems,
+            refCondiment,refCountry,refDrink,refJuice,refMaterialRes,refMenuItemType,refMenuItemSubType,refLocation); 
+
+        console.log(initRefs);
+        response.json(initRefs);    
     }) 
 })
 

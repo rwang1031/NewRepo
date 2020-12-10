@@ -92,12 +92,12 @@ function getInitUserAndProfileByAuthToken(authToken){
     }          
 }
 
-function getJsonTest(){
+function getRefData(){
     try{
         var cp = new sql.ConnectionPool(config)
         var pool = cp.connect().then(function(conn){
             return conn.request()
-            .execute('[dbo].[spTestJson]')           
+            .execute('[dbo].[spGetRefAll]')           
         }); 
         return pool;
   
@@ -112,5 +112,5 @@ module.exports = {
     getUserByAuthToken:getUserByAuthToken,
     updateUser:updateUser,
     getInitUserAndProfileByAuthToken:getInitUserAndProfileByAuthToken,
-    getJsonTest:getJsonTest
+    getRefData:getRefData
 }
