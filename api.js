@@ -16,6 +16,7 @@ const { stringify } = require('querystring');
 const { profile } = require('console');
 const { parse } = require('path');
 const InitRefs = require('./models/initRefs');
+const orderDbSvc = require('./orderDbSvc');
 //var cors = require('cors');
 var app = express();
 app.use(cors());
@@ -123,7 +124,7 @@ router.route('/users/init/:authToken').get((request,response)=>{
             key = Object.keys(orderMealItemsDataSet)[0];
 
             console.log(result.recordsets);
-        var orderMealItems = JSON.parse(orderMealItemsDataSet[key]);
+        var orderMealItems = orderMealItemsDataSet[key]!=''? JSON.parse(orderMealItemsDataSet[key]): null;
 
  
         var initObject = new InitObj(user,profiles,orderMealItems);         
@@ -285,6 +286,31 @@ var mapProfileFromDB = function(record){
     record.fldDayOfBirth,
     record.fldUserId);
 }
+
+
+router.route('/order').post((request,response)=>{
+    let order = request.body;
+    console.log("order param:")
+    console.log(order);
+     orderDbSvc.createMenuItems(
+        order.userId,
+        order.profileId,
+        order.intendedDeliverDate,
+        order.mealItems,
+     ).then((result)=>{  
+         console.log("menuItems created:")
+         console.log(result);   
+
+         var currentOrderDataSet = result.recordsets[0][0];
+         var key = Object.keys(currentOrderDataSet)[0];
+         var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;  
+
+         response.json(currentOrder);    
+     }) 
+})
+
+
+
 
 app.get('/authorized', function (req, res) {
     res.send('Secured Resource');

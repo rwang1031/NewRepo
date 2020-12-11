@@ -4,10 +4,11 @@ class MealItem{
             this.id = 1,
             this.typeid= 1,
             this.subTypeId= 2,
-
-            this.sideId=null,           
-            this.drinkId=2,
-            this.juiceId=null,
+            this.menuItemId = 0,
+           
+            this.sides=[1],           
+            this.drinks=[2],
+            this.juices=[2],
             this.condiments =[2,3],
 
             this.intendDeliverDate ='2020-12-06',
