@@ -92,6 +92,24 @@ function getInitUserAndProfileByAuthToken(authToken){
     }          
 }
 
+function getRefProvincesByCountryId(countryId){
+    try{
+        var cp = new sql.ConnectionPool(config)
+        var pool = cp.connect().then(function(conn){
+            return conn.request()
+            .input('CountryId',countryId) 
+            .execute('[dbo].[spGetRefProvinceByCountry]')           
+        }); 
+        return pool;  
+    }
+    catch(err){
+        console.log(err);
+    }          
+}
+
+
+
+
 function getRefData(){
     try{
         var cp = new sql.ConnectionPool(config)
@@ -112,5 +130,6 @@ module.exports = {
     getUserByAuthToken:getUserByAuthToken,
     updateUser:updateUser,
     getInitUserAndProfileByAuthToken:getInitUserAndProfileByAuthToken,
-    getRefData:getRefData
+    getRefData:getRefData,
+    getRefProvincesByCountryId:getRefProvincesByCountryId
 }

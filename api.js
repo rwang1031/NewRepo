@@ -123,15 +123,37 @@ router.route('/users/init/:authToken').get((request,response)=>{
         var orderMealItemsDataSet = result.recordsets[2][0];
             key = Object.keys(orderMealItemsDataSet)[0];
 
-            console.log(result.recordsets);
         var orderMealItems = orderMealItemsDataSet[key]!=''? JSON.parse(orderMealItemsDataSet[key]): null;
-
- 
+        console.log('init orders retrieved:');
+        console.log(orderMealItems);
         var initObject = new InitObj(user,profiles,orderMealItems);         
         response.json(initObject);
 
      }) 
 })
+
+
+router.route('/repo/Provinces/:countryId').get((request,response)=>{   
+    let countryId = request.params.countryId;
+    
+     userDbSvc.getRefProvincesByCountryId(
+        countryId
+     ).then((result)=>{
+         console.log("get ref provinces final result:"+stringify(result));
+         
+         var refProvincesDataSet = result.recordsets[0][0];
+
+         console.log("getProvines");
+         console.log(refProvincesDataSet);
+
+         key = Object.keys(refProvincesDataSet)[0];
+         var refProvinces = JSON.parse(refProvincesDataSet[key]);
+
+
+         response.json(refProvinces);    
+     }) 
+})
+
 
 router.route('/repo/refData').get((request,response)=>{   
 
@@ -177,8 +199,6 @@ router.route('/repo/refData').get((request,response)=>{
 
         var initRefs = new InitRefs(availableMenuItems,
             refCondiment,refCountry,refDrink,refJuice,refMaterialRes,refMenuItemType,refMenuItemSubType,refLocation); 
-
-        console.log(initRefs);
         response.json(initRefs);    
     }) 
 })
@@ -299,12 +319,12 @@ router.route('/order').post((request,response)=>{
         order.mealItems,
      ).then((result)=>{  
          console.log("menuItems created:")
-         console.log(result);   
+          
 
          var currentOrderDataSet = result.recordsets[0][0];
          var key = Object.keys(currentOrderDataSet)[0];
-         var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;  
-
+         var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;          
+         console.log(currentOrder); 
          response.json(currentOrder);    
      }) 
 })
