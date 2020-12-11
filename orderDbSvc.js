@@ -28,10 +28,10 @@ sql.on('error', err => {
     }           
 }
 
-function createMenuItems(userId,profileId,intentedDeliverDate,mealItemsJson){
+function createMealItems(userId,profileId,intentedDeliverDate,mealItemsJson){
     try{       
         var cp = new sql.ConnectionPool(config)
-        console.log("Clear currentDay and createMenuItems:+++");
+        console.log("Clear currentDay and createMealItems:+++");
         var pool = cp.connect().then(function(conn){
             return conn.request()
             .input('UserId',userId)
@@ -97,14 +97,14 @@ function getMenuItem(id){
     }          
 }
 
-function getMenuItemsByUserId(userId){
+function getOrderMealItemsByUserId(userId){
     try{
         var cp = new sql.ConnectionPool(config)
-        console.log("getMenuItembyuserid:+++");
+        console.log("getOrderMealItemsByUserId:+++");
         var pool = cp.connect().then(function(conn){
             return conn.request()
             .input('UserId',userId) 
-            .execute('[dbo].[spMenuItemsGetByUserId]')           
+            .execute('[dbo].[spOrderMealItemsGetByUserId]')           
         }); 
         return pool;
     }
@@ -115,9 +115,9 @@ function getMenuItemsByUserId(userId){
 
 module.exports = {
     createMenuItem: createMenuItem,
-    createMenuItems:createMenuItems,
+    createMealItems:createMealItems,
     getMenuItem:getMenuItem,
     updateMenuItem:updateMenuItem,
     removeMenuItem:removeMenuItem,
-    getMenuItemsByUserId:getMenuItemsByUserId
+    getOrderMealItemsByUserId:getOrderMealItemsByUserId
 }

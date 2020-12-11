@@ -312,7 +312,7 @@ router.route('/order').post((request,response)=>{
     let order = request.body;
     console.log("order param:")
     console.log(order);
-     orderDbSvc.createMenuItems(
+     orderDbSvc.createMealItems(
         order.userId,
         order.profileId,
         order.intendedDeliverDate,
@@ -320,7 +320,20 @@ router.route('/order').post((request,response)=>{
      ).then((result)=>{  
          console.log("menuItems created:")
           
+         var currentOrderDataSet = result.recordsets[0][0];
+         var key = Object.keys(currentOrderDataSet)[0];
+         var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;          
+         console.log(currentOrder); 
+         response.json(currentOrder);    
+     }) 
+})
 
+router.route('/order/:userId').get((request,response)=>{
+    let userId = request.params.userId;
+    console.log("order param:")
+     orderDbSvc.getOrderMealItemsByUserId(
+        userId
+     ).then((result)=>{        
          var currentOrderDataSet = result.recordsets[0][0];
          var key = Object.keys(currentOrderDataSet)[0];
          var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;          
