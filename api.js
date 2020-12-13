@@ -378,6 +378,22 @@ router.route('/order/:userId').get((request,response)=>{
      }) 
 })
 
+router.route('/order/pay/:orderId/:userId').get((request,response)=>{
+    let userId = request.params.userId;
+    let orderId = request.params.orderId;
+    console.log("order param:")
+     orderDbSvc.payOrder(
+        orderId,
+        userId
+     ).then((result)=>{        
+         var currentOrderDataSet = result.recordsets[0][0];
+         var key = Object.keys(currentOrderDataSet)[0];
+         var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;          
+         console.log(currentOrder); 
+         response.json(currentOrder);    
+     }) 
+})
+
 
 
 

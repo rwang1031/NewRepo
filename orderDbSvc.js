@@ -76,9 +76,27 @@ function getOrderMealItemsByUserId(userId){
     }          
 }
 
+function payOrder(userId,orderId){
+    try{
+        var cp = new sql.ConnectionPool(config)
+        console.log("getOrderMealItemsByUserId:+++");
+        var pool = cp.connect().then(function(conn){
+            return conn.request()
+            .input('OrderId',orderId)  
+            .input('UserId',userId)
+            .execute('[dbo].[[spOrderPay]]')           
+        }); 
+        return pool;
+    }
+    catch(err){
+        console.log(err);
+    }          
+}
+
 module.exports = {
     createMealItems:createMealItems,
     removeOrderByUserId:removeOrderByUserId,
     removeMealItemsByProfileIdAndDeliverDate:removeMealItemsByProfileIdAndDeliverDate,
-    getOrderMealItemsByUserId:getOrderMealItemsByUserId
+    getOrderMealItemsByUserId:getOrderMealItemsByUserId,
+    payOrder:payOrder
 }
