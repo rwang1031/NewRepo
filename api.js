@@ -181,24 +181,28 @@ router.route('/repo/refData').get((request,response)=>{
         key = Object.keys(refJuiceDataSet)[0];
         var refJuice = JSON.parse(refJuiceDataSet[key]);
 
-        var refMaterialResDataSet = result.recordsets[5][0];
+        var refSideDataSet = result.recordsets[5][0];
+        key = Object.keys(refSideDataSet)[0];
+        var refSide = JSON.parse(refSideDataSet[key]);
+
+        var refMaterialResDataSet = result.recordsets[6][0];
         key = Object.keys(refMaterialResDataSet)[0];
         var refMaterialRes = JSON.parse(refMaterialResDataSet[key]);
 
-        var refMenuItemTypeDataSet = result.recordsets[6][0];
+        var refMenuItemTypeDataSet = result.recordsets[7][0];
         key = Object.keys(refMenuItemTypeDataSet)[0];
         var refMenuItemType = JSON.parse(refMenuItemTypeDataSet[key]);
 
-        var refMenuItemSubTypeDataSet = result.recordsets[7][0];
+        var refMenuItemSubTypeDataSet = result.recordsets[8][0];
         key = Object.keys(refMenuItemSubTypeDataSet)[0];
         var refMenuItemSubType = JSON.parse(refMenuItemSubTypeDataSet[key]);
 
-        var refLocationDataSet = result.recordsets[8][0];
+        var refLocationDataSet = result.recordsets[9][0];
         key = Object.keys(refLocationDataSet)[0];
         var refLocation = JSON.parse(refLocationDataSet[key]);
 
         var initRefs = new InitRefs(availableMenuItems,
-            refCondiment,refCountry,refDrink,refJuice,refMaterialRes,refMenuItemType,refMenuItemSubType,refLocation); 
+            refCondiment,refCountry,refDrink,refJuice,refSide,refMaterialRes,refMenuItemType,refMenuItemSubType,refLocation); 
         response.json(initRefs);    
     }) 
 })

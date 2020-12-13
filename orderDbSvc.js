@@ -10,6 +10,7 @@ function createMealItems(userId,profileId,intentedDeliverDate,mealItemsJson){
     try{       
         var cp = new sql.ConnectionPool(config)
         console.log("Clear currentDay and createMealItems:+++");
+        console.log(mealItemsJson);
         var pool = cp.connect().then(function(conn){
             return conn.request()
             .input('UserId',userId)
