@@ -102,7 +102,10 @@ function init(router,userDbSvc,mapProfileFromDB){
         recordset[0].fldPostalCode,
         recordset[0].fldCountry,
         recordset[0].fldCountryProvinceMappingId,
-        recordset[0].fldCity);
+        recordset[0].fldCity,
+        recordset[0].fldCountryName,
+        recordset[0].fldProvinceName       
+        );
     }
   
 };
