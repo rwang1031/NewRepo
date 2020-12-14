@@ -1,9 +1,7 @@
-const userDbSvc = require('./userDbSvc');
-const profileDbSvc = require('./profileDbSvc');
-var Db = require('./userDbSvc');
-var User = require('./models/user');
+const userDbSvc = require('./dbServices/userDbSvc');
+const profileDbSvc = require('./dbServices/profileDbSvc');
+var Db = require('./dbServices/userDbSvc');
 var Profile = require('./models/profile');
-var InitObj = require('./models/initObj');
 var express = require('express');
 var bodyParser = require('body-parser');
 var jwt = require('express-jwt');
@@ -13,10 +11,8 @@ var cors = require('cors');
 
 const { request } = require('express');
 const { stringify } = require('querystring');
-const { profile } = require('console');
-const { parse } = require('path');
 const InitRefs = require('./models/initRefs');
-const orderDbSvc = require('./orderDbSvc');
+const orderDbSvc = require('./dbServices/orderDbSvc');
 //var cors = require('cors');
 var app = express();
 app.use(cors());
@@ -50,87 +46,19 @@ router.use((request,response,next)=>{
     next();
 })
 
-router.route('/users').post((request,response)=>{
+
+var mapProfileFromDB = function(record){
     
-    let user = request.body;
-     userDbSvc.createUser(
-        user.firstName,
-        user.lastName,
-        user.email,
-        user.authToken,
-        user.address1,
-        user.address2,
-        user.day_phone,
-        user.eve_phone,
-        user.postal_code,
-        user.country,
-        user.province,
-        user.city
-     ).then((result)=>{     
-         response.json(mapUserFromDB(result.recordset));    
-     }) 
-})
-
-router.route('/users').put((request,response)=>{
-    
-    let user = request.body;
-     userDbSvc.updateUser(
-        user.id,
-        user.firstName,
-        user.lastName,
-        user.email,
-        user.address1,
-        user.address2,
-        user.day_phone,
-        user.eve_phone,
-        user.postal_code,
-        user.country,
-        user.province,
-        user.city
-     ).then((result)=>{     
-         response.json(mapUserFromDB(result.recordset));    
-     }) 
-})
-
-router.route('/users/:authToken').get((request,response)=>{   
-    let authToken = request.params.authToken;
-    console.log("getuser");
-    console.log(request.params);
-     userDbSvc.getUserByAuthToken(
-        authToken
-     ).then((result)=>{
-         console.log("get user final result:"+stringify(result));        
-         response.json(mapUserFromDB(result.recordset));    
-     }) 
-
-})
-
-router.route('/users/init/:authToken').get((request,response)=>{   
-    let authToken = request.params.authToken;
-    console.log("getuser");
-    console.log(request.params);
-     userDbSvc.getInitUserAndProfileByAuthToken(
-        authToken
-     ).then((result)=>{
-         
-         var user = mapUserFromDB(result.recordsets[0]);
-         var profiles = [];
-        result.recordsets[1].forEach(item=>{
-           var profile = mapProfileFromDB(item)
-           profiles.push(profile);
-        }) 
-        
-        var orderMealItemsDataSet = result.recordsets[2][0];
-            key = Object.keys(orderMealItemsDataSet)[0];
-
-        var orderMealItems = orderMealItemsDataSet[key]!=''? JSON.parse(orderMealItemsDataSet[key]): null;
-        console.log('init orders retrieved:');
-        console.log(orderMealItems);
-        var initObject = new InitObj(user,profiles,orderMealItems);         
-        response.json(initObject);
-
-     }) 
-})
+    if(record==null | record.length==0)
+        return null;
+    return new Profile(
+    record.fldId,
+    record.fldFirstName,
+    record.fldLastName,
+    record.fldLocationId,
+    record.fldDayOfBirth,
+    record.fldUserId);
+}
 
 
 router.route('/repo/Provinces/:countryId').get((request,response)=>{   
@@ -207,195 +135,17 @@ router.route('/repo/refData').get((request,response)=>{
     }) 
 })
 
-var mapUserFromDB = function(recordset){
+var userApi = require('./apis/user');
 
-    if(recordset==null | recordset.length==0)
-        return null;
-    return new User(
-    recordset[0].fldUserId,
-    recordset[0].fldFirstName,
-    recordset[0].fldLastName,
-    recordset[0].fldEmail,
-    recordset[0].fldAuthId,
-    recordset[0].fldAddress,
-    recordset[0].fldAddressLine2,
-    recordset[0].fldDayPhone,
-    recordset[0].fldEvePhone,
-    recordset[0].fldPostalCode,
-    recordset[0].fldCountry,
-    recordset[0].fldCountryProvinceMappingId,
-    recordset[0].fldCity);
-}
+userApi.init(router,userDbSvc,mapProfileFromDB);
 
-router.route('/profiles').post((request,response)=>{
-    
-    let profile = request.body;
-     profileDbSvc.createProfile(
-        profile.firstName,
-        profile.lastName,
-        profile.location,
-        profile.userId,
-        profile.dayOfBirth
-     ).then((result)=>{  
-         console.log("profile created:")
-         console.log(result);   
-         response.json(mapProfileFromDB(result.recordset[0]));    
-     }) 
-})
+var profileApi = require('./apis/profile');
 
-router.route('/profiles').put((request,response)=>{
-    
-    let profile = request.body;
-    profileDbSvc.updateProfile(
-        profile.id,
-        profile.firstName,
-        profile.lastName,
-        profile.location,
-        profile.dayOfBirth      
-     ).then((result)=>{     
-         response.json(mapProfileFromDB(result.recordset));    
-     }) 
-})
+profileApi.init(router,profileDbSvc,mapProfileFromDB);
 
-router.route('/profiles/:id').delete((request,response)=>{
-    
-    var id = request.params.id;
-    profileDbSvc.removeProfile(
-        id  
-     ).then((result)=>{     
-         response.json(mapProfileFromDB(result.recordset));    
-     }) 
-})
+var orderApi = require('./apis/order');
 
-
-router.route('/profiles/:id').get((request,response)=>{   
-    let id = Number(request.params.id);
-     profileDbSvc.getProfile(
-        id
-     ).then((result)=>{
-         console.log("get profile final result:");
-         console.log(result);
-
-         response.json(mapProfileFromDB(result.recordset[0]));    
-     }) 
-
-})
-
-router.route('/profiles/byUser/:userId').get((request,response)=>{   
-    let userId = request.params.userId;
-     profileDbSvc.getProfilesByUserId(
-        userId
-     ).then((result)=>{
-         console.log(result.recordset);   
-        
-        var profiles = [];
-
-        result.recordset.forEach(item=>{
-           var profile = mapProfileFromDB(item)
-           profiles.push(profile);
-        })    
-         response.json(profiles);    
-     }) 
-})
-
-var mapProfileFromDB = function(record){
-
-    if(record==null | record.length==0)
-        return null;
-    return new Profile(
-    record.fldId,
-    record.fldFirstName,
-    record.fldLastName,
-    record.fldLocationId,
-    record.fldDayOfBirth,
-    record.fldUserId);
-}
-
-
-router.route('/order').post((request,response)=>{
-    let order = request.body;
-    console.log("order param:")
-    console.log(order);
-     orderDbSvc.createMealItems(
-        order.userId,
-        order.profileId,
-        order.intendedDeliverDate,
-        order.mealItems,
-     ).then((result)=>{  
-         console.log("menuItems created:")
-          
-         var currentOrderDataSet = result.recordsets[0][0];
-         var key = Object.keys(currentOrderDataSet)[0];
-         var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;          
-         console.log(currentOrder); 
-         response.json(currentOrder);    
-     }) 
-})
-
-router.route('/order/:userId').delete((request,response)=>{
-    let userId = request.params.userId;
-
-     orderDbSvc.removeOrderByUserId(
-        userId
-     ).then((result)=>{  
-         console.log("order deleted:")          
-         var currentOrderDataSet = result.recordsets[0][0];
-         var key = Object.keys(currentOrderDataSet)[0];
-         var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;          
-         console.log(currentOrder); 
-         response.json(currentOrder);    
-     }) 
-})
-
-router.route('/order/menuItems/:profileId/:intendeddeliverDate').delete((request,response)=>{
-    let profileId = request.params.profileId;
-    let intendeddeliverDate = request.params.intendeddeliverDate;
-
-     orderDbSvc.removeMealItemsByProfileIdAndDeliverDate(
-        profileId,
-        intendeddeliverDate
-     ).then((result)=>{  
-         console.log("menuItems deleted:")          
-         var currentOrderDataSet = result.recordsets[0][0];
-         var key = Object.keys(currentOrderDataSet)[0];
-         var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;          
-         console.log(currentOrder); 
-         response.json(currentOrder);    
-     }) 
-})
-
-router.route('/order/:userId').get((request,response)=>{
-    let userId = request.params.userId;
-    console.log("order param:")
-     orderDbSvc.getOrderMealItemsByUserId(
-        userId
-     ).then((result)=>{        
-         var currentOrderDataSet = result.recordsets[0][0];
-         var key = Object.keys(currentOrderDataSet)[0];
-         var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;          
-         console.log(currentOrder); 
-         response.json(currentOrder);    
-     }) 
-})
-
-router.route('/order/pay/:orderId/:userId').get((request,response)=>{
-    let userId = request.params.userId;
-    let orderId = request.params.orderId;
-    console.log("order param:")
-     orderDbSvc.payOrder(
-        orderId,
-        userId
-     ).then((result)=>{        
-         var currentOrderDataSet = result.recordsets[0][0];
-         var key = Object.keys(currentOrderDataSet)[0];
-         var currentOrder = currentOrderDataSet[key]!=''? JSON.parse(currentOrderDataSet[key]): null;          
-         console.log(currentOrder); 
-         response.json(currentOrder);    
-     }) 
-})
-
-
-
+orderApi.init(router,orderDbSvc);
 
 app.get('/authorized', function (req, res) {
     res.send('Secured Resource');
