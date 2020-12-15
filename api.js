@@ -8,6 +8,7 @@ var jwt = require('express-jwt');
 var jwks = require('jwks-rsa');
 var http = require('http');
 var cors = require('cors');
+const stripe = require('stripe')('sk_test_51HyTMoHnG7zQB5MVMqBBpCy3UzI0RiizGyfQonpcNTfVYlYNSVUEnYOmpigi46AoWzUC9gXuA5PvB9dHtn5OyavX00V2ZmjIHe');
 
 const { request } = require('express');
 const { stringify } = require('querystring');

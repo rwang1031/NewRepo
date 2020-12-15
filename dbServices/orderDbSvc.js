@@ -79,12 +79,12 @@ function getOrderMealItemsByUserId(userId){
 function payOrder(userId,orderId){
     try{
         var cp = new sql.ConnectionPool(config)
-        console.log("getOrderMealItemsByUserId:+++");
+        console.log(orderId+'  '+ userId);
         var pool = cp.connect().then(function(conn){
             return conn.request()
             .input('OrderId',orderId)  
             .input('UserId',userId)
-            .execute('[dbo].[[spOrderPay]]')           
+            .execute('[dbo].[spOrderPay]')           
         }); 
         return pool;
     }
