@@ -90,10 +90,25 @@ function create(req,res,next){
             source: stripeToken,
             capture: false,
         }).then(chargeObj=>{
-            console.log(chargeObj);
+            console.log(JSON.stringify(chargeObj));
+            var source = chargeObj.source;
             orderDbSvc.payOrder(
                 userId,
-                orderId
+                orderId,
+                chargeObj.id,
+                source.id, 
+                source.brand,
+                source.last4,
+                chargeObj.amount,
+                chargeObj.currency,
+                chargeObj.customer,
+                source.country,
+                source.address_city,
+                source.address_state,
+                source.exp_month,
+                source.exp_year,
+                chargeObj.status,
+                chargeObj.paid
              ).then((result)=>{        
                  var currentOrderDataSet = result.recordsets[0][0];
                  var key = Object.keys(currentOrderDataSet)[0];

@@ -76,7 +76,7 @@ function getOrderMealItemsByUserId(userId){
     }          
 }
 
-function payOrder(userId,orderId){
+function payOrder(userId,orderId,stripeToken,cardId,cardBrand,last4,amount,currency,ownerName,country,city,province,expMonth,expYear,statu,paid){
     try{
         var cp = new sql.ConnectionPool(config)
         console.log(orderId+'  '+ userId);
@@ -84,6 +84,20 @@ function payOrder(userId,orderId){
             return conn.request()
             .input('OrderId',orderId)  
             .input('UserId',userId)
+            .input('StripeToken',stripeToken)
+            .input('CardId', cardId)
+            .input('CardBrand',cardBrand)
+            .input('Last4',last4)
+            .input('Amount',amount)
+            .input('Currency',currency)
+            .input('OwnerName',ownerName)
+            .input('Country',country)
+            .input('City',city)
+            .input('Province',province)
+            .input('ExpMonth',expMonth)
+            .input('ExpYear',expYear)
+            .input('Status',statu)
+            .input('Paid',paid)
             .execute('[dbo].[spOrderPay]')           
         }); 
         return pool;
