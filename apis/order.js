@@ -83,15 +83,19 @@ function create(req,res,next){
     const priceInPence = 5 * 100;
     var orderId = req.body.orderId;
     var userId = req.body.userId;
+    var email = req.body.email;
+    var receiptUrl;
 
     stripe.charges.create({
             amount: priceInPence,
             currency: 'cad',
             source: stripeToken,
             capture: false,
+            receipt_email:email
         }).then(chargeObj=>{
             console.log(JSON.stringify(chargeObj));
             var source = chargeObj.source;
+            receiptUrl = chargeObj.receipt_url;
             orderDbSvc.payOrder(
                 userId,
                 orderId,
@@ -116,16 +120,21 @@ function create(req,res,next){
                  console.log(currentOrder); 
                  res.json(currentOrder).end();
                  stripe.charges.capture(chargeObj.id)
-                    .then(res=>res)
+                    .then(res=>{
+                        sendEmail(email,receiptUrl);
+                    })
                     .catch(err=>err)    
              }) 
 
         }).catch(error=>{
             console.log(error);
         })
-
 }
 
+function sendEmail(email,receitUrl){
+    console.log(email);
+    console.log(receitUrl);
+}
 
 module.exports = {
     init:init
