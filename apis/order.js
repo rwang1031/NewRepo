@@ -1,7 +1,7 @@
 const { response } = require('express');
 const orderDbSvc = require('../dbServices/orderDbSvc');
-
 const stripe = require('stripe')('sk_test_51HyTMoHnG7zQB5MVMqBBpCy3UzI0RiizGyfQonpcNTfVYlYNSVUEnYOmpigi46AoWzUC9gXuA5PvB9dHtn5OyavX00V2ZmjIHe');
+const nodeMailer = require('nodemailer');
 
 function init(router,orderDbSvc){
 
@@ -121,7 +121,8 @@ function create(req,res,next){
                  res.json(currentOrder).end();
                  stripe.charges.capture(chargeObj.id)
                     .then(res=>{
-                        sendEmail(email,receiptUrl);
+                        if(email!=null)
+                        sendEmail(email,receiptUrl).catch(console.error);
                     })
                     .catch(err=>err)    
              }) 
@@ -131,9 +132,43 @@ function create(req,res,next){
         })
 }
 
-function sendEmail(email,receitUrl){
+
+
+
+async function sendEmail(email,receitUrl){
+
+
     console.log(email);
     console.log(receitUrl);
+    var postMaster = 'admin@ns1.ruixuanwang.com';
+
+    let transporter = nodeMailer.createTransport({
+        host: 'mail.ns1.ruixuanwang.com',
+        port: 25,
+        secure: false,
+        auth: {
+          type:"login",
+          user: postMaster,
+          pass: process.env.EmailPwd
+        },
+        tls:{
+            rejectUnauthorized: false
+        },
+        ignoreTLS:false
+      });
+
+      var mailOptions = {
+        from: postMaster,
+        to: email,
+        subject: 'testing payment receipt',
+        text: 'Your payment has been received, here is the receipt: '+ receitUrl
+      };
+
+     let info = await transporter.sendMail(mailOptions);
+ 
+     console.log('mail sent'+ info.messageId);
+   
+     console.log('Email sent: ' + info.response);     
 }
 
 module.exports = {
