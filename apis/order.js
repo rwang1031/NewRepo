@@ -141,6 +141,7 @@ async function sendEmail(email,receitUrl){
     console.log(email);
     console.log(receitUrl);
     var postMaster = 'admin@ns1.ruixuanwang.com';
+    console.log(process.env.EmailPwd)
 
     let transporter = nodeMailer.createTransport({
         host: 'mail.ns1.ruixuanwang.com',
