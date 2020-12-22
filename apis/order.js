@@ -2,6 +2,7 @@ const { response } = require('express');
 const orderDbSvc = require('../dbServices/orderDbSvc');
 const stripe = require('stripe')('sk_test_51HyTMoHnG7zQB5MVMqBBpCy3UzI0RiizGyfQonpcNTfVYlYNSVUEnYOmpigi46AoWzUC9gXuA5PvB9dHtn5OyavX00V2ZmjIHe');
 const nodeMailer = require('nodemailer');
+const { assign, resolveContent } = require('nodemailer/lib/shared');
 
 function init(router,orderDbSvc){
 
@@ -77,11 +78,19 @@ function init(router,orderDbSvc){
 
 };
 
-function create(req,res,next){
+  
+ 
+
+  function create(req,res,next){
     const stripeToken = req.body.stripeToken;
-    //const price = Helper.getPrice(req.body.order);
-    const priceInPence = 5 * 100;
     var orderId = req.body.orderId;
+
+    orderDbSvc.getOrderPrice(orderId).then((result)=>{
+        var priceDataSet = result.recordset[0];
+        var price = priceDataSet.fldPrice;
+        const priceInPence = price * 100;
+        console.log('price in Pence'+priceInPence);
+    
     var userId = req.body.userId;
     var email = req.body.email;
     var receiptUrl;
@@ -130,9 +139,8 @@ function create(req,res,next){
         }).catch(error=>{
             console.log(error);
         })
+    });
 }
-
-
 
 
 async function sendEmail(email,receitUrl){

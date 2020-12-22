@@ -14,6 +14,7 @@ const InitRefs = require('./models/initRefs');
 const orderDbSvc = require('./dbServices/orderDbSvc');
 var app = express();
 app.use(cors());
+
 var router = express.Router();
 
 app.use(bodyParser.urlencoded({extended:true}));
@@ -155,7 +156,11 @@ app.set('port',port);
 
 var server = http.createServer(app);
 
+server.on('connection',function(socket){
+    console.log("a new conneciton is made by a client");
+
+});
+
 server.listen(port);
 
 console.log('order api is running at' + port);
-

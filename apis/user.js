@@ -60,8 +60,9 @@ function init(router,userDbSvc,mapProfileFromDB){
     
     router.route('/users/init/:authToken').get((request,response)=>{   
         let authToken = request.params.authToken;
-        console.log("getuser");
-        console.log(request.params);
+        console.log("before getInitUserAndProfileByAuthToken");
+        let start = Date.now();
+        console.log(start);
          userDbSvc.getInitUserAndProfileByAuthToken(
             authToken
          ).then((result)=>{
@@ -79,7 +80,14 @@ function init(router,userDbSvc,mapProfileFromDB){
             var orderMealItems = orderMealItemsDataSet[key]!=''? JSON.parse(orderMealItemsDataSet[key]): null;
             console.log('init orders retrieved:');
             console.log(orderMealItems);
-            var initObject = new InitObj(user,profiles,orderMealItems);         
+            var initObject = new InitObj(user,profiles,orderMealItems); 
+            
+            
+
+            console.log("after getInitUserAndProfileByAuthToken");
+            let milli = Date.now() - start;
+            console.log(milli);
+
             response.json(initObject);
     
          }) 

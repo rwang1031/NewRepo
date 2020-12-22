@@ -76,6 +76,24 @@ function getOrderMealItemsByUserId(userId){
     }          
 }
 
+function getOrderPrice(orderId){
+    try{
+        var cp = new sql.ConnectionPool(config)
+        console.log("getOrderMealItemsByUserId:+++");
+        var pool = cp.connect().then(function(conn){
+            return conn.request()
+            .input('OrderId',orderId) 
+            .execute('[dbo].[spGetOrderPrice]')           
+        }); 
+        return pool;
+    }
+    catch(err){
+        console.log(err);
+    }          
+}
+
+
+
 function payOrder(userId,orderId,stripeToken,cardId,cardBrand,last4,amount,currency,ownerName,country,city,province,expMonth,expYear,statu,paid){
     try{
         var cp = new sql.ConnectionPool(config)
@@ -112,5 +130,6 @@ module.exports = {
     removeOrderByUserId:removeOrderByUserId,
     removeMealItemsByProfileIdAndDeliverDate:removeMealItemsByProfileIdAndDeliverDate,
     getOrderMealItemsByUserId:getOrderMealItemsByUserId,
-    payOrder:payOrder
+    payOrder:payOrder,
+    getOrderPrice:getOrderPrice
 }
