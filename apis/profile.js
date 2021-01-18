@@ -26,8 +26,8 @@ function init(router,profileDbSvc, mapProfileFromDB){
             profile.lastName,
             profile.location,
             profile.dayOfBirth      
-         ).then((result)=>{     
-             response.json(mapProfileFromDB(result.recordset));    
+         ).then((result)=>{  
+             response.json(mapProfileFromDB(result.recordset[0]));    
          }) 
     })
     
