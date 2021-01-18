@@ -86,7 +86,7 @@ function init(router,orderDbSvc){
     orderDbSvc.getOrderPrice(orderId).then((result)=>{
         var priceDataSet = result.recordset[0];
         var price = priceDataSet.fldPrice;
-        const priceInPence = price * 100;
+        const priceInPence = Math.round(price * 100);
         console.log('price in Pence'+priceInPence);
     
     var userId = req.body.userId;
