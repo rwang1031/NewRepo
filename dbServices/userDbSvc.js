@@ -5,7 +5,7 @@ sql.on('error', err => {
     // ... error handler
 })
 
- function createUser(firstName,lastName,email,authToken,address1,address2,day_phone,eve_phone,postal_code,country,province,city){
+ function createUser(firstName,lastName,email,authToken,address1,address2,day_phone,eve_phone,postal_code,country,province,city,orgnizationId){
     try{       
         var cp = new sql.ConnectionPool(config)
         console.log("authId:+++"+ authToken);
@@ -23,6 +23,7 @@ sql.on('error', err => {
             .input('Country',country)
             .input('CountryProvinceMappingId',province)
             .input('City',city)
+            .input('OrganizationId',orgnizationId)
             .execute('[dbo].[spUserCreate]')           
         }); 
         return pool; 
@@ -107,6 +108,37 @@ function getRefProvincesByCountryId(countryId){
     }          
 }
 
+function getOrgnizationByCode(code){
+    try{
+        var cp = new sql.ConnectionPool(config)
+        var pool = cp.connect().then(function(conn){
+            return conn.request()
+            .input('Code',code) 
+            .execute('[dbo].[spOrgnizationGetByCode]')           
+        }); 
+        return pool;  
+    }
+    catch(err){
+        console.log(err);
+    }          
+}
+
+function updateUserOrgnization(userId,orgId){
+    try{
+        var cp = new sql.ConnectionPool(config)
+        var pool = cp.connect().then(function(conn){
+            return conn.request()
+            .input('UserId',userId)
+            .input('OrgnizationId',orgId)  
+            .execute('[dbo].[spUserUpdateOrgnization]')           
+        }); 
+        return pool;  
+    }
+    catch(err){
+        console.log(err);
+    }          
+}
+
 
 
 
@@ -131,5 +163,7 @@ module.exports = {
     updateUser:updateUser,
     getInitUserAndProfileByAuthToken:getInitUserAndProfileByAuthToken,
     getRefData:getRefData,
-    getRefProvincesByCountryId:getRefProvincesByCountryId
+    getRefProvincesByCountryId:getRefProvincesByCountryId,
+    getOrgnizationByCode:getOrgnizationByCode,
+    updateUserOrgnization:updateUserOrgnization
 }

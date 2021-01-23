@@ -18,7 +18,8 @@ function init(router,userDbSvc,mapProfileFromDB){
             user.postal_code,
             user.country,
             user.province,
-            user.city
+            user.city,
+            user.orgnizationId
          ).then((result)=>{     
              response.json(mapUserFromDB(result.recordset));    
          }) 
@@ -92,6 +93,18 @@ function init(router,userDbSvc,mapProfileFromDB){
     
          }) 
     })
+
+    router.route('/users/org').put((request,response)=>{   
+        let user = request.body;
+        console.log('/users/org');
+         userDbSvc.updateUserOrgnization(
+            user.id,
+            user.orgnizationId
+         ).then((result)=>{
+             console.log("update user orgnization final result:"+JSON.stringify(result));        
+             response.json(mapUserFromDB(result.recordset));
+         }) 
+    })
     
     var mapUserFromDB = function(recordset){
 
@@ -112,7 +125,9 @@ function init(router,userDbSvc,mapProfileFromDB){
         recordset[0].fldCountryProvinceMappingId,
         recordset[0].fldCity,
         recordset[0].fldCountryName,
-        recordset[0].fldProvinceName       
+        recordset[0].fldProvinceName,
+        recordset[0].fldOrgnizationId,
+        recordset[0].fldOrgnizationDisplayName       
         );
     }
   

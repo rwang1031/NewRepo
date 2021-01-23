@@ -59,6 +59,22 @@ var mapProfileFromDB = function(record){
     record.fldUserId);
 }
 
+router.route('/orgnization/:code').get((request,response)=>{   
+    let code = request.params.code;
+    
+     userDbSvc.getOrgnizationByCode (
+        code
+     ).then((result)=>{
+         console.log("get orgnization final result:"+stringify(result));        
+         var orgnizationDataSet = result.recordsets[0][0];
+         console.log("orgnizationDataSet");
+         console.log(orgnizationDataSet);
+         key = Object.keys(orgnizationDataSet)[0];
+         var orgnization = orgnizationDataSet[key]==''? null: JSON.parse(orgnizationDataSet[key])[0];
+         response.json(orgnization);    
+     }) 
+})
+
 
 router.route('/repo/Provinces/:countryId').get((request,response)=>{   
     let countryId = request.params.countryId;
@@ -75,7 +91,6 @@ router.route('/repo/Provinces/:countryId').get((request,response)=>{
 
          key = Object.keys(refProvincesDataSet)[0];
          var refProvinces = JSON.parse(refProvincesDataSet[key]);
-
 
          response.json(refProvinces);    
      }) 

@@ -1,5 +1,5 @@
 class User{
-    constructor(id,firstName,lastName,email,authToken,address1,address2,day_phone,eve_phone,postal_code,country,province,city,countryName,provinceName){
+    constructor(id,firstName,lastName,email,authToken,address1,address2,day_phone,eve_phone,postal_code,country,province,city,countryName,provinceName,orgnizationId,orgnizationName){
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -15,6 +15,8 @@ class User{
         this.city = city;
         this.countryName = countryName;
         this.provinceName = provinceName;
+        this.orgnizationId = orgnizationId;
+        this.orgnizationName = orgnizationName;
     }
 
 }
