@@ -69,6 +69,7 @@ function init(router,userDbSvc,mapProfileFromDB){
          ).then((result)=>{
              
              var user = mapUserFromDB(result.recordsets[0]);
+             
              var profiles = [];
             result.recordsets[1].forEach(item=>{
                var profile = mapProfileFromDB(item)
@@ -88,6 +89,8 @@ function init(router,userDbSvc,mapProfileFromDB){
             console.log("after getInitUserAndProfileByAuthToken");
             let milli = Date.now() - start;
             console.log(milli);
+
+            console.log(initObject);
 
             response.json(initObject);
     
@@ -127,7 +130,9 @@ function init(router,userDbSvc,mapProfileFromDB){
         recordset[0].fldCountryName,
         recordset[0].fldProvinceName,
         recordset[0].fldOrgnizationId,
-        recordset[0].fldOrgnizationDisplayName       
+        recordset[0].fldOrgnizationDisplayName,
+        recordset[0].fldRoleId,
+        recordset[0].fldRoleName
         );
     }
   
