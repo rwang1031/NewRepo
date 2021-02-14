@@ -142,11 +142,12 @@ function updateUserOrgnization(userId,orgId){
 
 
 
-function getRefData(){
+function getRefData(userId){
     try{
         var cp = new sql.ConnectionPool(config)
         var pool = cp.connect().then(function(conn){
             return conn.request()
+            .input('UserId',userId)
             .execute('[dbo].[spGetRefAll]')           
         }); 
         return pool;

@@ -97,9 +97,12 @@ router.route('/repo/Provinces/:countryId').get((request,response)=>{
 })
 
 
-router.route('/repo/refData').get((request,response)=>{   
+router.route('/repo/refData/:userId').get((request,response)=>{   
+
+    let userId = request.params.userId;
 
     userDbSvc.getRefData(
+        userId
     ).then((result)=>{
 
 
