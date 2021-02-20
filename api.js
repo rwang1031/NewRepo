@@ -8,6 +8,9 @@ var jwt = require('express-jwt');
 var jwks = require('jwks-rsa');
 var http = require('http');
 var cors = require('cors');
+const ssrs = require('mssql-ssrs');
+var fs = require('fs');
+
 const { request } = require('express');
 const { stringify } = require('querystring');
 const InitRefs = require('./models/initRefs');
@@ -151,6 +154,41 @@ router.route('/repo/refData/:userId').get((request,response)=>{
         response.json(initRefs);    
     }) 
 })
+
+router.route('/report').get((request,response)=>{   
+   getTestReport(request, response);
+})
+
+async function getTestReport(req,res){
+    try {
+
+        // Server URL 
+        const url = 'http://sql5090.site4now.net/ReportServer';
+        // Window server user allocated for SSRS
+        const config = { username: process.env.RPT_USER , password: process.env.RPT_PASS };       
+        // Start the SRRS
+        await ssrs.reportExecution.start(url, config, null,null);
+        // Define parameters
+        const reportPath = '/rwang1031-001/Report1';
+        const fileType = 'PDF';
+        // const parameters = {
+        // };
+
+        // Rendering the report based on the required report type
+        const report = await ssrs.reportExecution.getReport(reportPath, fileType, null);
+        
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/pdf');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+
+        res.send(new Buffer.from(report.Result, 'base64'));
+                  
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+
 
 var userApi = require('./apis/user');
 
