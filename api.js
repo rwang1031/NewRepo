@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 var jwt = require('express-jwt');
 var jwks = require('jwks-rsa');
 var http = require('http');
-var cors = require('cors');
 const ssrs = require('mssql-ssrs');
 var fs = require('fs');
 
@@ -16,7 +15,6 @@ const { stringify } = require('querystring');
 const InitRefs = require('./models/initRefs');
 const orderDbSvc = require('./dbServices/orderDbSvc');
 var app = express();
-app.use(cors());
 
 var router = express.Router();
 
@@ -40,7 +38,7 @@ var jwtCheck = jwt({
 
 //app.use(jwtCheck);
 
-app.use('/api',router);
+app.use('/apis/api',router);
 
 
 router.use((request,response,next)=>{
