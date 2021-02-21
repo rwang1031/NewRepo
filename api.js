@@ -9,12 +9,14 @@ var jwks = require('jwks-rsa');
 var http = require('http');
 const ssrs = require('mssql-ssrs');
 var fs = require('fs');
+var cors = require('cors');
 
 const { request } = require('express');
 const { stringify } = require('querystring');
 const InitRefs = require('./models/initRefs');
 const orderDbSvc = require('./dbServices/orderDbSvc');
 var app = express();
+app.use(cors());
 
 var router = express.Router();
 
